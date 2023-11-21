@@ -1,0 +1,597 @@
+{
+	"info": {
+		"_postman_id": "7ffe2fa4-3962-4d54-b4ad-aeba0c277e7d",
+		"name": "API_Final2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28120732",
+		"_collection_link": "https://apihackathon-team19.postman.co/workspace/API_Mavericks_Team6_Postman~f87bb57b-0418-45f9-a973-3a8b744513df/collection/28120732-7ffe2fa4-3962-4d54-b4ad-aeba0c277e7d?action=share&source=collection_link&creator=28120732"
+	},
+	"item": [
+		{
+			"name": "UserLogin_Sirisha",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=JSON.parse(responseBody);",
+							"pm.globals.set(\"token\",jsonData.token);",
+							"",
+							"",
+							"postman.setNextRequest(\"Create New Patient with assertion\");",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"password\": \"Guide09\", \"userLoginEmail\": \"sirishalolgu2811@gmail.com\"}"
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Patient with assertion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check Status code\",function(){\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Sucessful Post request\", () =>{\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,202]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Sucessful code name has String\", () =>{\r",
+							"    pm.response.to.have.status(\"Created\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () =>{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () =>{\r",
+							"    pm.expect(pm.response.responseTime).to.below(2000);\r",
+							"});\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Test data of the response\",() =>{\r",
+							"    pm.expect(jsonData).to.be.an(\"object\");\r",
+							"        pm.expect(jsonData.patientId).to.be.an(\"number\");\r",
+							"                pm.expect(jsonData.FirstName).to.be.an(\"string\");\r",
+							"                        pm.expect(jsonData.LastName).to.be.an(\"string\");\r",
+							"                            pm.expect(jsonData.ContactNumber).to.be.an(\"string\");\r",
+							"\r",
+							" });\r",
+							"\r",
+							"//JSON Schema Validation\r",
+							"\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"patientId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"FirstName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"LastName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"ContactNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Email\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Allergy\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FoodCategory\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FileMorbidity\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidity\"\r",
+							"                },\r",
+							"                \"FileMorbidityCondition\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidityCondition\"\r",
+							"                },\r",
+							"        \"DateOfBirth\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"DieticianId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"patientId\",\r",
+							"        \"FirstName\",\r",
+							"        \"LastName\",\r",
+							"        \"ContactNumber\",\r",
+							"        \"Email\",\r",
+							"        \"Allergy\",\r",
+							"        \"FoodCategory\",\r",
+							"        \"FileMorbidity\",\r",
+							"        \"FileMorbidityCondition\",\r",
+							"        \"DateOfBirth\",\r",
+							"        \"DieticianId\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\",()=>{\r",
+							"    pm.expect(tv4.validate(jsonData,schema)).to.be.false;\r",
+							"})\r",
+							"\r",
+							" //retrieving patientid\r",
+							"pm.collectionVariables.set(\"patientId\",jsonData.patientId);\r",
+							"\r",
+							"postman.setNextRequest(\"Get all Patient\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Local Variable\r",
+							"const randomnum=Math.floor((Math.random()*100+1));\r",
+							"var randonstr=\"john\"+Math.random().toString(36).substring(2);\r",
+							"pm.collectionVariables.set(\"FirstName\",randonstr);\r",
+							"pm.collectionVariables.set(\"LastName\",randonstr);\r",
+							"pm.collectionVariables.set(\"Email\",randonstr+\"@gmail.com\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "patientInfo",
+							"value": "{\n  \"FirstName\": \"{{FirstName}}\",\n  \"LastName\": \"{{LastName}}\",\n  \"ContactNumber\": \"1891100005\",\n  \"Email\": \"{{Email}}\",\n  \"Allergy\": \"Egg\",\n  \"FoodCategory\": \"Vegan\",\n  \"DateOfBirth\": \"1951-05-01\"\n}",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "HyperThyroid_Report_final.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check Status code\",function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () =>{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () =>{\r",
+							"    pm.expect(pm.response.responseTime).to.below(2000);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							" var jsonData=JSON.parse(responseBody); \r",
+							"\r",
+							"\r",
+							"var pid = pm.collectionVariables.get(\"patientId\");\r",
+							"console.log(pid)\r",
+							"   const expectedPatientId = pid;  \r",
+							"pm.test(\"Check if response body contains 'patientId'\", function () {\r",
+							"\r",
+							"   \r",
+							"\r",
+							"    // Check if the response body contains the expected patientId\r",
+							"    pm.expect(responseBody.includes(expectedPatientId)).to.be.true;\r",
+							"});\r",
+							"postman.setNextRequest(\"Get Patient Morbidity details\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzaXJpc2hhbG9sZ3UyODExQGdtYWlsLmNvbSIsImlhdCI6MTcwMDA5MDE5NywiZXhwIjoxNzAwMTE4OTk3fQ.nqM51I9r-AgzB0Oxhi8Yi1xx-3tzJLqKTFo_XVjQipxDrHXSPQZnPvLZWjS1hQOYXcUWaMSXlHoKvqVZ_es30A"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					],
+					"query": [
+						{
+							"key": "patientInfo",
+							"value": "{\n  \"FirstName\": \"ABC1\",\n  \"LastName\": \"EFG\",\n  \"ContactNumber\": \"999100099\",\n  \"Email\": \"test023@email.com\",\n  \"Allergy\": \"Egg\",\n  \"FoodCategory\": \"Vegan\",\n  \"DateOfBirth\": \"1955-09-01\"\n}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patient Morbidity details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Sucessful Post request\", () =>{\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () =>{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () =>{\r",
+							"    pm.expect(pm.response.responseTime).to.below(2000);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fileId\", jsonData[0].fileId);\r",
+							"//pm.globals.set(\"fileId\", jsonData[0].fileId);\r",
+							"//pm.collectionVariables.unset(\"variable_key\");\r",
+							"console.log(jsonData[0].fileId)\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check Status code\",function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Rettrieve Patient File by Field\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/{{patientId}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"{{patientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rettrieve Patient File by Field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Check Status code\",function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () =>{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () =>{\r",
+							"    pm.expect(pm.response.responseTime).to.below(2000);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"Update Patient by id\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/viewFile/{{fileId}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"viewFile",
+						"{{fileId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Patient by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Sucessful Post request\", () =>{\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () =>{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () =>{\r",
+							"    pm.expect(pm.response.responseTime).to.below(2000);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"Delete Patient\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "patientInfo",
+							"value": "{\n  \"FirstName\": \"{{FirstName}}\",\n  \"LastName\": \"{{LastName}}\",\n  \"ContactNumber\": \"5491100009\",\n  \"Email\": \"{{Email}}\",\n  \"Allergy\": \"Egg\",\n  \"FoodCategory\": \"Vegan\",\n  \"DateOfBirth\": \"1954-09-01\"\n}",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/cnudr/Downloads/HyperThyroid_Report_final.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient/{{patientId}}\n",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"{{patientId}}\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check Status code\",function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", () =>{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", () =>{\r",
+							"    pm.expect(pm.response.responseTime).to.below(2000);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/{{patientId}}\n",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"{{patientId}}\n"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "FirstName",
+			"value": ""
+		},
+		{
+			"key": "LastName",
+			"value": ""
+		},
+		{
+			"key": "Email",
+			"value": ""
+		},
+		{
+			"key": "patientId",
+			"value": ""
+		}
+	]
+}

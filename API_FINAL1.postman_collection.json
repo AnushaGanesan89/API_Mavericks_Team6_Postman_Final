@@ -1,0 +1,2393 @@
+{
+	"info": {
+		"_postman_id": "b379bb1c-49cd-4606-84f7-c5b42aa0eafa",
+		"name": "API_FINAL1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28120732",
+		"_collection_link": "https://apihackathon-team19.postman.co/workspace/API_Mavericks_Team6_Postman~f87bb57b-0418-45f9-a973-3a8b744513df/collection/28120732-b379bb1c-49cd-4606-84f7-c5b42aa0eafa?action=share&source=collection_link&creator=28120732"
+	},
+	"item": [
+		{
+			"name": "Dietician Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"pm.globals.set(\"Team_token\",jsonData.token);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400)\r",
+							"});\r",
+							"\r",
+							"const jsondata=pm.response.json();\r",
+							"\r",
+							"\r",
+							"//JSON Schema Validation\r",
+							"\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"loginUserEmail\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"roles\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"token\",\r",
+							"    \"type\",\r",
+							"    \"userId\",\r",
+							"    \"loginUserEmail\",\r",
+							"    \"roles\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\",()=>{\r",
+							"    pm.expect(tv4.validate(jsondata,schema)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"let responsebody=pm.response.json();\r",
+							"pm.test(\"Get type of morbidity response\",()=>{\r",
+							"\r",
+							"    pm.expect(responsebody.token).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.type).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.loginUserEmail).to.be.a(\"string\"); \r",
+							"    \r",
+							"})\r",
+							"\r",
+							"postman.setNextRequest(\"Create New Patient\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"{{password}}\",\r\n  \"userLoginEmail\": \"{{userLoginEmail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Patient",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var data = {\r",
+							"  \"FirstName\": \"{{FirstName}}\",\r",
+							"  \"LastName\": \"{{LastName}}\",\r",
+							"  \"ContactNumber\": \"{{ContactNumber}}\",\r",
+							"  \"Email\": \"{{Email}}\",\r",
+							"  \"Allergy\": \"{{Allergy}}\",\r",
+							"  \"FoodCategory\": \"{{FoodCategory}}\",\r",
+							"  \"DateOfBirth\": \"{{DateOfBirth}}\"\r",
+							"}\r",
+							"pm.variables.set(\"dataset\",JSON.stringify(data));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"\r",
+							"pm.globals.set(\"patientId_env\",jsonData.patientId);\r",
+							"pm.globals.set(\"email\",jsonData.Email);\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('Created')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 1000ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"let responsebody=pm.response.json();\r",
+							"pm.test(\"Get Patients data type of response\",()=>{\r",
+							"\r",
+							"    pm.expect(responsebody.patientId).to.be.a(\"number\");\r",
+							"    pm.expect(responsebody.FirstName).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.LastName).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.ContactNumber).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.Email).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.Allergy).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.FoodCategory).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.DateOfBirth).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.DieticianId).to.be.a(\"number\");\r",
+							"    \r",
+							"    \r",
+							"})\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"patientId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"FirstName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"LastName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"ContactNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Email\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Allergy\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FoodCategory\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FileMorbidity\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidity\"\r",
+							"                },\r",
+							"                \"FileMorbidityCondition\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidityCondition\"\r",
+							"                },\r",
+							"        \"DateOfBirth\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"DieticianId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"patientId\",\r",
+							"        \"FirstName\",\r",
+							"        \"LastName\",\r",
+							"        \"ContactNumber\",\r",
+							"        \"Email\",\r",
+							"        \"Allergy\",\r",
+							"        \"FoodCategory\",\r",
+							"        \"FileMorbidity\",\r",
+							"        \"FileMorbidityCondition\",\r",
+							"        \"DateOfBirth\",\r",
+							"        \"DieticianId\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test('Schema is valid', () =>{\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.false;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"Get_All_Patients\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableUrlEncoding": false
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/C:/Users/Prasanna/Desktop/Postman_API_Mavericks_Team6/HyperThyroid_Report_final.pdf"
+						},
+						{
+							"key": "patientInfo",
+							"value": "{{dataset}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					],
+					"query": [
+						{
+							"key": "patientInfo",
+							"value": "{{dataset}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_All_Patients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Successful Get request\",()=>{\r",
+							"pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(4000)\r",
+							"});\r",
+							"\r",
+							"const jsonData=pm.response.json();\r",
+							"\r",
+							"\r",
+							"//JSON Schema Validation\r",
+							"\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"patientId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"FirstName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"LastName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"ContactNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Email\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Allergy\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FoodCategory\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FileMorbidity\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidity\"\r",
+							"                },\r",
+							"                \"FileMorbidityCondition\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidityCondition\"\r",
+							"                },\r",
+							"        \"DateOfBirth\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"DieticianId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"patientId\",\r",
+							"        \"FirstName\",\r",
+							"        \"LastName\",\r",
+							"        \"ContactNumber\",\r",
+							"        \"Email\",\r",
+							"        \"Allergy\",\r",
+							"        \"FoodCategory\",\r",
+							"        \"FileMorbidity\",\r",
+							"        \"FileMorbidityCondition\",\r",
+							"        \"DateOfBirth\",\r",
+							"        \"DieticianId\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test('Schema is valid', () =>{\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"Update Patient by UserId\");\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdWRoYS50ZWxsdXJpQGdtYWlsLmNvbSIsImlhdCI6MTcwMDA1ODU3NSwiZXhwIjoxNzAwMDg3Mzc1fQ.rGdbgGYN3pWZ8odxXtaBPyCL4zwlITFMwosGzC2nBvGTCzMTmEAV9fVuBCPRC6OsC-arK3iNOcXeQi-07A-TwA"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Patient by UserId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var data1 = {\r",
+							"        \"FirstName\": \"{{FirstName}}\",\r",
+							"        \"LastName\": \"{{LastName}}\",\r",
+							"        \"ContactNumber\": \"{{ContactNumber1}}\",\r",
+							"        \"Email\": \"{{Email}}\",\r",
+							"        \"Allergy\": \"{{Allergy}}\",\r",
+							"        \"FoodCategory\": \"{{FoodCategory}}\",\r",
+							"        \"DateOfBirth\": \"{{DateOfBirth}}\"\r",
+							"}\r",
+							"pm.variables.set(\"dataset1\",JSON.stringify(data1));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});\r",
+							"\r",
+							"let responsebody=pm.response.json();\r",
+							"pm.test(\"Get Patients data type of response\",()=>{\r",
+							"\r",
+							"    pm.expect(responsebody.patientId).to.be.a(\"number\");\r",
+							"    pm.expect(responsebody.FirstName).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.LastName).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.ContactNumber).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.Email).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.Allergy).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.FoodCategory).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.DateOfBirth).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.DieticianId).to.be.a(\"number\");\r",
+							"    \r",
+							"    \r",
+							"})\r",
+							"\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"patientId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"FirstName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"LastName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"ContactNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Email\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"Allergy\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FoodCategory\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"FileMorbidity\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidity\"\r",
+							"                },\r",
+							"                \"FileMorbidityCondition\": {\r",
+							"                    \"$ref\": \"#/definitions/FileMorbidityCondition\"\r",
+							"                },\r",
+							"        \"DateOfBirth\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"DieticianId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"patientId\",\r",
+							"        \"FirstName\",\r",
+							"        \"LastName\",\r",
+							"        \"ContactNumber\",\r",
+							"        \"Email\",\r",
+							"        \"Allergy\",\r",
+							"        \"FoodCategory\",\r",
+							"        \"FileMorbidity\",\r",
+							"        \"FileMorbidityCondition\",\r",
+							"        \"DateOfBirth\",\r",
+							"        \"DieticianId\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test('Schema is valid', () =>{\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.false;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"Get Patients Morbidity Details\");\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Prasanna/Downloads/Hypo Thyroid-Report.pdf.pdf",
+							"disabled": true
+						},
+						{
+							"key": "patientInfo",
+							"value": "{{dataset1}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient/{{patientId_env}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"{{patientId_env}}"
+					],
+					"query": [
+						{
+							"key": "patientId ",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patients Morbidity Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"\r",
+							"pm.globals.set(\"fileId_env\",jsonData[0].fileId);\r",
+							"\r",
+							"postman.setNextRequest(\"Retrieve Patient file by FileId\");\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Retrieve Patient file by FileId\");\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/{{patientId_env}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"{{patientId_env}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Patient file by FileId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"postman.setNextRequest(\"Get all Morbidity\");\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/pdf')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/viewFile/{{fileId_env}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"viewFile",
+						"{{fileId_env}}"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": "6556af07cd95e81d0314da28",
+							"disabled": true
+						},
+						{
+							"key": null,
+							"value": "716",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Morbidity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Retrieve Morbidity condition by Test name\");\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(4000)\r",
+							"});\r",
+							"\r",
+							"const jsonData=pm.response.json();\r",
+							"\r",
+							"\r",
+							"//JSON Schema Validation\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"morbidityId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"morbidityTestId\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityNameRegex\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityTestName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityTestUnit\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityMarkerMinVal\": {\r",
+							"          \"type\": \"number\"\r",
+							"        },\r",
+							"        \"morbidityMarkerMaxVal\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"morbidityId\",\r",
+							"        \"morbidityTestId\",\r",
+							"        \"morbidityNameRegex\",\r",
+							"        \"morbidityTestName\",\r",
+							"        \"morbidityTestUnit\",\r",
+							"        \"morbidityMarkerMinVal\",\r",
+							"        \"morbidityMarkerMaxVal\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\",()=>{\r",
+							"    pm.expect(tv4.validate(jsonData,schema)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"let responsebody=pm.response.json();\r",
+							"pm.test(\"Get type of morbidity response\",()=>{\r",
+							"\r",
+							"    pm.expect(responsebody[0].morbidityId).to.be.a(\"number\");\r",
+							"    pm.expect(responsebody[0].morbidityTestId).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody[0].morbidityNameRegex).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody[0].morbidityTestName).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody[0].morbidityTestUnit).to.be.a(\"string\");  \r",
+							"    \r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/morbidity",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"morbidity"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Morbidity condition by Test name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"postman.setNextRequest(\"Dietician_Logout\");\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});\r",
+							"\r",
+							"const jsonData=pm.response.json();\r",
+							"\r",
+							"\r",
+							"//JSON Schema Validation\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"morbidityId\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"morbidityTestId\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityNameRegex\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityTestName\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityTestUnit\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"morbidityMarkerMinVal\": {\r",
+							"          \"type\": \"number\"\r",
+							"        },\r",
+							"        \"morbidityMarkerMaxVal\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"morbidityId\",\r",
+							"        \"morbidityTestId\",\r",
+							"        \"morbidityNameRegex\",\r",
+							"        \"morbidityTestName\",\r",
+							"        \"morbidityTestUnit\",\r",
+							"        \"morbidityMarkerMinVal\",\r",
+							"        \"morbidityMarkerMaxVal\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\",()=>{\r",
+							"    pm.expect(tv4.validate(jsonData,schema)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"let responsebody=pm.response.json();\r",
+							"pm.test(\"Get type of morbidity response\",()=>{\r",
+							"\r",
+							"    pm.expect(responsebody[0].morbidityId).to.be.a(\"number\");\r",
+							"    pm.expect(responsebody[0].morbidityTestId).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody[0].morbidityNameRegex).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody[0].morbidityTestName).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody[0].morbidityTestUnit).to.be.a(\"string\");  \r",
+							"    \r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var morbidityName=\"{{morbidityName}}\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/morbidity/{{morbidityName}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"morbidity",
+						"{{morbidityName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dietician_Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"User_Patient_Login\");\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is text/plain;charset=UTF-8\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('text/plain;charset=UTF-8')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/logoutdietician",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"logoutdietician"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User_Patient_Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"pm.globals.set(\"Team_token\",jsonData.token);\r",
+							"\r",
+							"\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"loginUserEmail\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"roles\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"token\",\r",
+							"    \"type\",\r",
+							"    \"userId\",\r",
+							"    \"loginUserEmail\",\r",
+							"    \"roles\"\r",
+							"  ]\r",
+							"}\r",
+							"pm.test('Schema is valid', () =>{\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});\r",
+							"postman.setNextRequest(\"Get Patients Morbidity Details_ByPatient\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"{{password1}}\",\r\n  \"userLoginEmail\": \"{{email}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patients Morbidity Details_ByPatient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});\r",
+							"postman.setNextRequest(\"Retrieve Patient file by FileId_ByPatient\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/{{patientId_env}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"{{patientId_env}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Patient file by FileId_ByPatient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/pdf')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Patient_Logout\");\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/viewFile/{{fileId_env}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"viewFile",
+						"{{fileId_env}}"
+					],
+					"query": [
+						{
+							"key": null,
+							"value": "6556af07cd95e81d0314da28",
+							"disabled": true
+						},
+						{
+							"key": null,
+							"value": "716",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patient_Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Dietician Login_ForDeletion\");\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is text/plain;charset=UTF-8\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('text/plain;charset=UTF-8')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/logoutdietician",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"logoutdietician"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dietician Login_ForDeletion",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"pm.globals.set(\"Team_token\",jsonData.token);\r",
+							"\r",
+							"\r",
+							"\r",
+							"var schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"loginUserEmail\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"roles\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"token\",\r",
+							"    \"type\",\r",
+							"    \"userId\",\r",
+							"    \"loginUserEmail\",\r",
+							"    \"roles\"\r",
+							"  ]\r",
+							"}\r",
+							"pm.test('Schema is valid', () =>{\r",
+							"    pm.expect(tv4.validate(jsonData, schema)).to.be.true;\r",
+							"});\r",
+							"postman.setNextRequest(\"Delete_Patient_Id\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"{{password}}\",\r\n  \"userLoginEmail\": \"{{userLoginEmail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete_Patient_Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is text/plain;charset=UTF-8\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('text/plain;charset=UTF-8')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Dietician_Logout _AfterDeletion\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/{{patientId_env}}",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"{{patientId_env}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dietician_Logout _AfterDeletion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is text/plain;charset=UTF-8\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('text/plain;charset=UTF-8')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/logoutdietician",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"logoutdietician"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Patient_InvalidEmail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"test\",\r\n  \"userLoginEmail\": \"abctester@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Patient_invalidPassword",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"tt\",\r\n  \"userLoginEmail\": \"tester@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Patient_invalid_credentials",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"test\",\r\n  \"userLoginEmail\": \"abctester@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Dietician_invalidEmail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"Guide09\",\r\n  \"userLoginEmail\": \"vee0513@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient/120",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"120"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Dietician_InvalidPassword",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"uide09\",\r\n  \"userLoginEmail\": \"svee0513@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Dietician_Invalid_Credential",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", () => {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"uide09\",\r\n  \"userLoginEmail\": \"ee0513@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dietician Login_Negative",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"status code is 200: Created\",()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"var jsonData=JSON.parse(responseBody);\r",
+							"pm.globals.set(\"Team_token\",jsonData.token);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check Status Text\",()=>{\r",
+							"pm.response.to.have.status('OK')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is present\",()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type Header is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json')\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 400ms\",()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400)\r",
+							"});\r",
+							"\r",
+							"const jsondata=pm.response.json();\r",
+							"\r",
+							"\r",
+							"//JSON Schema Validation\r",
+							"\r",
+							"var schema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"loginUserEmail\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"roles\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"token\",\r",
+							"    \"type\",\r",
+							"    \"userId\",\r",
+							"    \"loginUserEmail\",\r",
+							"    \"roles\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Schema is valid\",()=>{\r",
+							"    pm.expect(tv4.validate(jsondata,schema)).to.be.true;\r",
+							"})\r",
+							"\r",
+							"let responsebody=pm.response.json();\r",
+							"pm.test(\"Get type of morbidity response\",()=>{\r",
+							"\r",
+							"    pm.expect(responsebody.token).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.type).to.be.a(\"string\");\r",
+							"    pm.expect(responsebody.loginUserEmail).to.be.a(\"string\"); \r",
+							"    \r",
+							"})\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"password\": \"{{password}}\",\r\n  \"userLoginEmail\": \"{{userLoginEmail}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base_Url}}/login",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Missing LastName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "patientInfo",
+							"value": "{\n  \"FirstName\": \"TestOne\",\n  \"LastName\": \"\",\n  \"ContactNumber\": \"8002583232\",\n  \"Email\": \"TestnewOne@gmail.com\",\n  \"Allergy\": \"Sesame\",\n  \"FoodCategory\": \"Jain\",\n  \"DateOfBirth\": \"1988-15-12\"\n}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_OnlyFile_NoPatientInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"  pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/prasa/Downloads/HyperThyroid_Report_final.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Testreport_By_fileID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/viewFile/123654789555",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"viewFile",
+						"123654789555"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Deleting_PatientID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/120",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"120"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Get all morbidity",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/morbidity",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"morbidity"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Morbidity by Test name",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/morbidity/Fasting Glucose",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"morbidity",
+						"Fasting Glucose"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Update_PatientInfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {\r",
+							"  pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "patientInfo",
+							"value": "{\n        \"patientId\": 147,\n        \"FirstName\": \"sajjini\",\n        \"LastName\": \"viswanathan\",\n        \"ContactNumber\": \"4256215879\",\n        \"Email\": \"abc@gmail.com\",\n        \"Allergy\": \"peanut\",\n        \"FoodCategory\": \"Vegan\",\n        \"DateOfBirth\": \"1985-09-14T00:00:00.000+00:00\",\n        \"DieticianId\": 104\n    }",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{Base_Url}}/patient/152",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"152"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NegativeScenario_Specific_Patient's_testreport",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Team_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base_Url}}/patient/testReports/1000",
+					"host": [
+						"{{Base_Url}}"
+					],
+					"path": [
+						"patient",
+						"testReports",
+						"1000"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
